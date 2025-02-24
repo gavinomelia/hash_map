@@ -127,4 +127,18 @@ RSpec.describe HashMap do
       expect(empty_hash_map.length).to eq(0)
     end
   end
+
+  describe '#clear' do
+    let(:hash_map) { HashMap.new(0.75, 16) }
+
+    before do
+      hash_map.set('apple', 'red')
+      hash_map.set('banana', 'yellow')
+    end
+
+    it 'clears all key-value pairs' do
+      hash_map.clear
+      expect(hash_map.length).to eq(0)
+    end
+  end
 end

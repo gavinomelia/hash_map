@@ -54,9 +54,13 @@ class HashMap
 
     bucket.reject! { |k, _| k == key }
   end
-  
+
   def length
     @buckets.compact.flatten(1).size
+  end
+
+  def clear
+    @buckets = Array.new(@capacity)
   end
 
   private
