@@ -2,28 +2,19 @@ require 'rspec'
 require_relative '../lib/hash_map'
 
 RSpec.describe HashMap do
-  describe '#set' do
-    let(:hash_map) { HashMap.new(0.75, 16) }
+  let(:hash_map) { HashMap.new(0.75, 16) }
 
+  describe '#set' do
     before do
-      hash_map.set('apple', 'red')
-      hash_map.set('banana', 'yellow')
-      hash_map.set('carrot', 'orange')
-      hash_map.set('dog', 'brown')
-      hash_map.set('elephant', 'gray')
-      hash_map.set('frog', 'green')
-      hash_map.set('grape', 'purple')
-      hash_map.set('hat', 'black')
-      hash_map.set('ice cream', 'white')
-      hash_map.set('jacket', 'blue')
-      hash_map.set('kite', 'pink')
-      hash_map.set('lion', 'golden')
+      %w[apple banana carrot dog elephant frog grape hat ice\ cream jacket kite lion].each_with_index do |key, index|
+        hash_map.set(key, %w[red yellow orange brown gray green purple black white blue pink golden][index])
+      end
     end
 
     it 'sets and retrieves values correctly' do
-      expect(hash_map.instance_variable_get(:@buckets).flatten(1)).to include(['apple', 'red'])
-      expect(hash_map.instance_variable_get(:@buckets).flatten(1)).to include(['banana', 'yellow'])
-      expect(hash_map.instance_variable_get(:@buckets).flatten(1)).to include(['lion', 'golden'])
+      %w[apple banana lion].each do |key|
+        expect(hash_map.instance_variable_get(:@buckets).flatten(1)).to include([key, hash_map.get(key)])
+      end
     end
 
     it 'has a load factor of 0.75' do
@@ -36,21 +27,18 @@ RSpec.describe HashMap do
   end
 
   describe '#hash' do
-    let(:hash_map) { HashMap.new(0.75, 16) }
-
     it 'calculates the hash correctly' do
-      expect(hash_map.hash('apple')).to be_a(Integer)
-      expect(hash_map.hash('banana')).to be_a(Integer)
-      expect(hash_map.hash('carrot')).to be_a(Integer)
+      %w[apple banana carrot].each do |key|
+        expect(hash_map.hash(key)).to be_a(Integer)
+      end
     end
+
     it 'returns the same hash for the same key' do
       expect(hash_map.hash('apple')).to eq(hash_map.hash('apple'))
     end
   end
 
   describe '#get' do
-    let(:hash_map) { HashMap.new(0.75, 16) }
-
     before do
       hash_map.set('apple', 'red')
       hash_map.set('banana', 'yellow')
@@ -67,8 +55,6 @@ RSpec.describe HashMap do
   end
 
   describe '#has?' do
-    let(:hash_map) { HashMap.new(0.75, 16) }
-
     before do
       hash_map.set('apple', 'red')
       hash_map.set('banana', 'yellow')
@@ -88,8 +74,6 @@ RSpec.describe HashMap do
   end
 
   describe '#remove' do
-    let(:hash_map) { HashMap.new(0.75, 16) }
-
     before do
       hash_map.set('apple', 'red')
       hash_map.set('banana', 'yellow')
@@ -111,8 +95,6 @@ RSpec.describe HashMap do
   end
 
   describe '#length' do
-    let(:hash_map) { HashMap.new(0.75, 16) }
-
     before do
       hash_map.set('apple', 'red')
       hash_map.set('banana', 'yellow')
@@ -129,8 +111,6 @@ RSpec.describe HashMap do
   end
 
   describe '#clear' do
-    let(:hash_map) { HashMap.new(0.75, 16) }
-
     before do
       hash_map.set('apple', 'red')
       hash_map.set('banana', 'yellow')
@@ -143,8 +123,6 @@ RSpec.describe HashMap do
   end
 
   describe '#keys' do
-    let(:hash_map) { HashMap.new(0.75, 16) }
-
     before do
       hash_map.set('apple', 'red')
       hash_map.set('banana', 'yellow')
@@ -156,8 +134,6 @@ RSpec.describe HashMap do
   end
 
   describe '#values' do
-    let(:hash_map) { HashMap.new(0.75, 16) }
-
     before do
       hash_map.set('apple', 'red')
       hash_map.set('banana', 'yellow')
@@ -169,8 +145,6 @@ RSpec.describe HashMap do
   end
 
   describe '#entries' do
-    let(:hash_map) { HashMap.new(0.75, 16) }
-
     before do
       hash_map.set('apple', 'red')
       hash_map.set('banana', 'yellow')
