@@ -31,4 +31,35 @@ class HashMap
       bucket << [key, value]
     end
   end
+
+  def get(key)
+    _, bucket = find_bucket(key)
+
+    return nil unless bucket
+
+    pair = bucket.find { |k, _| k == key }
+    pair ? pair[1] : nil
+  end
+
+  def has?(key)
+    _, bucket = find_bucket(key)
+    return false unless bucket
+
+    bucket.any? { |k, _| k == key }
+  end
+
+  def remove(key)
+    _, bucket = find_bucket(key)
+    return unless bucket
+
+    bucket.reject! { |k, _| k == key }
+  end
+
+  private
+
+  def find_bucket(key)
+    index = hash(key) % @capacity
+    bucket = @buckets[index]
+    [index, bucket]
+  end
 end
