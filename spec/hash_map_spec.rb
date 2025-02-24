@@ -29,12 +29,12 @@ RSpec.describe HashMap do
   describe '#hash' do
     it 'calculates the hash correctly' do
       %w[apple banana carrot].each do |key|
-        expect(hash_map.hash(key)).to be_a(Integer)
+        expect(hash_map.send(:hash, key)).to be_a(Integer)
       end
     end
 
     it 'returns the same hash for the same key' do
-      expect(hash_map.hash('apple')).to eq(hash_map.hash('apple'))
+      expect(hash_map.send(:hash, 'apple')).to eq(hash_map.send(:hash, 'apple'))
     end
   end
 

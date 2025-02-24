@@ -4,25 +4,12 @@
 class HashMap
   def initialize(load_factor, capacity)
     @load_factor = load_factor
-    @buckets = Array.new(capacity)
     @capacity = capacity
-  end
-
-  def hash(key)
-    hash_code = 0
-    prime_number = 31
-
-    key.each_char { |char| hash_code = prime_number * hash_code + char.ord }
-
-    hash_code
+    @buckets = Array.new(capacity) { [] }
   end
 
   def set(key, value)
-    index = hash(key) % @capacity
-    @buckets ||= Array.new(@capacity)
-    @buckets[index] ||= []
-
-    bucket = @buckets[index]
+    bucket = find_bucket(key)
     pair = bucket.find { |k, _| k == key }
 
     if pair
@@ -33,53 +20,50 @@ class HashMap
   end
 
   def get(key)
-    _, bucket = find_bucket(key)
-
-    return nil unless bucket
-
-    pair = bucket.find { |k, _| k == key }
+    pair = find_pair(key)
     pair ? pair[1] : nil
   end
 
   def has?(key)
-    _, bucket = find_bucket(key)
-    return false unless bucket
-
-    bucket.any? { |k, _| k == key }
+    !!find_pair(key)
   end
 
   def remove(key)
-    _, bucket = find_bucket(key)
-    return unless bucket
-
+    bucket = find_bucket(key)
     bucket.reject! { |k, _| k == key }
   end
 
   def length
-    @buckets.compact.flatten(1).size
+    @buckets.flatten(1).size
   end
 
   def clear
-    @buckets = Array.new(@capacity)
+    @buckets.each(&:clear)
   end
 
   def keys
-    @buckets.compact.flatten(1).map(&:first)
+    @buckets.flatten(1).map(&:first)
   end
 
   def values
-    @buckets.compact.flatten(1).map(&:last)
+    @buckets.flatten(1).map(&:last)
   end
 
   def entries
-    @buckets.compact.flatten(1)
+    @buckets.flatten(1)
   end
 
   private
 
+  def hash(key)
+    key.each_char.reduce(0) { |hash_code, char| 31 * hash_code + char.ord }
+  end
+
   def find_bucket(key)
-    index = hash(key) % @capacity
-    bucket = @buckets[index]
-    [index, bucket]
+    @buckets[hash(key) % @capacity]
+  end
+
+  def find_pair(key)
+    find_bucket(key).find { |k, _| k == key }
   end
 end
