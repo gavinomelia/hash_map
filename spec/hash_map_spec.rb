@@ -154,4 +154,31 @@ RSpec.describe HashMap do
       expect(hash_map.entries).to contain_exactly(['apple', 'red'], ['banana', 'yellow'])
     end
   end
+
+  describe '#resize' do
+    before do
+      %w[apple banana carrot dog elephant frog grape hat ice\ cream jacket kite lion].each_with_index do |key, index|
+        hash_map.set(key, %w[red yellow orange brown gray green purple black white blue pink golden][index])
+      end
+    end
+
+    it 'doubles the capacity when load factor is exceeded' do
+      expect(hash_map.instance_variable_get(:@capacity)).to eq(16)
+      hash_map.set('moon', 'silver')
+      expect(hash_map.instance_variable_get(:@capacity)).to eq(32)
+    end
+
+    it 'rehashes all existing keys after resizing' do
+      old_entries = hash_map.entries
+      hash_map.set('moon', 'silver')
+      new_entries = hash_map.entries
+      expect(new_entries).to include(*old_entries)
+    end
+
+    it 'maintains correct values after resizing' do
+      hash_map.set('moon', 'silver')
+      expect(hash_map.get('apple')).to eq('red')
+      expect(hash_map.get('moon')).to eq('silver')
+    end
+  end
 end

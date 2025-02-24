@@ -2,13 +2,15 @@
 
 # HashMap is a simple implementation of a hash map data structure.
 class HashMap
-  def initialize(load_factor, capacity)
+  def initialize(load_factor = 0.75, capacity = 16)
     @load_factor = load_factor
     @capacity = capacity
+    @size = 0
     @buckets = Array.new(capacity) { [] }
   end
 
   def set(key, value)
+    resize if @size >= @capacity * @load_factor
     bucket = find_bucket(key)
     pair = bucket.find { |k, _| k == key }
 
@@ -16,6 +18,7 @@ class HashMap
       pair[1] = value
     else
       bucket << [key, value]
+      @size += 1
     end
   end
 
@@ -30,15 +33,23 @@ class HashMap
 
   def remove(key)
     bucket = find_bucket(key)
-    bucket.reject! { |k, _| k == key }
+    removed_pair = bucket.find { |k, _| k == key }
+    if removed_pair
+      bucket.delete_if { |k, _| k == key }
+      @size -= 1
+      removed_pair[1]
+    else
+      nil
+    end
   end
 
   def length
-    @buckets.flatten(1).size
+    @size
   end
 
   def clear
     @buckets.each(&:clear)
+    @size = 0
   end
 
   def keys
@@ -65,5 +76,16 @@ class HashMap
 
   def find_pair(key)
     find_bucket(key).find { |k, _| k == key }
+  end
+
+  def resize
+    old_buckets = @buckets
+    @capacity *= 2
+    @buckets = Array.new(@capacity) { [] }
+    @size = 0
+
+    old_buckets.flatten(1).each do |key, value|
+      set(key, value)
+    end
   end
 end
