@@ -67,6 +67,10 @@ class HashMap
     @buckets.compact.flatten(1).map(&:first)
   end
 
+  def values
+    @buckets.compact.flatten(1).map(&:last)
+  end
+
   private
 
   def find_bucket(key)

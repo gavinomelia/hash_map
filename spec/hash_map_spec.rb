@@ -154,4 +154,17 @@ RSpec.describe HashMap do
       expect(hash_map.keys).to contain_exactly('apple', 'banana')
     end
   end
+
+  describe '#values' do
+    let(:hash_map) { HashMap.new(0.75, 16) }
+
+    before do
+      hash_map.set('apple', 'red')
+      hash_map.set('banana', 'yellow')
+    end
+
+    it 'returns an array of values' do
+      expect(hash_map.values).to contain_exactly('red', 'yellow')
+    end
+  end
 end
