@@ -38,9 +38,8 @@ class HashMap
       bucket.delete_if { |k, _| k == key }
       @size -= 1
       removed_pair[1]
-    else
-      nil
     end
+    nil
   end
 
   def length
