@@ -109,4 +109,22 @@ RSpec.describe HashMap do
       expect { hash_map.remove('non_existent_key') }.not_to raise_error
     end
   end
+
+  describe '#length' do
+    let(:hash_map) { HashMap.new(0.75, 16) }
+
+    before do
+      hash_map.set('apple', 'red')
+      hash_map.set('banana', 'yellow')
+    end
+
+    it 'returns the correct length' do
+      expect(hash_map.length).to eq(2)
+    end
+
+    it 'returns 0 for an empty hash map' do
+      empty_hash_map = HashMap.new(0.75, 16)
+      expect(empty_hash_map.length).to eq(0)
+    end
+  end
 end
